@@ -1,75 +1,35 @@
-LAB 3 - Light Intensity Sensor
+LAB 4 - Keypad
 
     -- objectives -- 
-- 16 bit sfrs for: 
-    - timer 2 reload (RCAP2H, RCAP2L) and timer 2 (T2H, T2L).
-    - timer 3 reload (TMR3RLH, TMR3RLL) and timer 3 (TMR3H, TMR3L)
-    - analog to digital converter (ADC) (ADC0H, ADC0L) for AIN0.
-- sbit for 7-seg display (use BCD decoder with light test)
-- timer 3 overflow as the conversion start to the ADC (timer3 initialization).
-- sample rate of 50,000 Hz (50 ms (delay) x 1000 Hz (1 ms)).
-- interrupt for ADC conversion and service it with a routine to get the 
-  result. (ADC initialization)
-- timer 2 overflow to create delay (50 ms).
-- display number function for intensity of light in 7-seg display.
-- oscillator initialization function (16.0 MHz). Turn external  oscillator off 
-  and use internal oscillator.
-- port initialization function (P1.0-P1.7 & P0.0-7). 
-    - P1.0-3 as push-pull
-    - P1.4-7 as open-drain (P1.7 for push-button (calibration))
-    - P0.0-3 as push-pull output and P0.4-7 as open-drain.
-        - P0.0 route /SYSCLK (experiment) (XBRn config)
-        - P0.1 LED output for calibration indication.
-- delay function 1 ms delay (Wait_ms).
-- scale function to scale measurement value to between 0-9.
-- calibrate function to calibrate min and max light intensities for a specific
-  environment.
+  - device initialization
+      - turn off watchdog timer
+      - oscillator
+          - turn off external oscillator in external oscillator control 
+            register (OSCXCN)
+          - use internal oscillator at 16MHz in internal oscillator control 
+            register (OSCICN)
+      - port
+          - enable cross-bar (XBARE) for output and weak pull-ups
+          - port 0 
+            configure P0.0-7 as push-pull and intialize outputs to low.
+          - port 1
+            configure P1.0-3 as push-pull and leave P1.4-7 as open-drain. keep
+            P1.0-3 outputs in its default high, make sure P1.4-7 are in input 
+            mode (high). 
 
-measurement_result ranges:
-  min light intensity: 610
-  max light intensity: 4095
+  - keypad 
+    - write readkeypad routine to read in the number pressed on the keypad 
+      matrix. 
+    - row_1-4 (R1-4) are configured as push-pull outputs (P1.0-3), and col_1-3
+      (C1-3) are configured as open-drain inputs (P1.4-6).
 
-*** Note ***:
-When entering calibration or calibrating the min/max intensities, do not press 
-the button (P1.7, S1) longer than half a second (0.5 second = 500 
-milliseconds) or 3/4 of a second, as this could potentially introduce a bug.
-if the bug is suspected, reset the chip with the reset button to start over.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  - 7-segment display
+    - write displaynumber routine to display number the pressed number on the 
+      keypad. this will use port 0 (P0.0-6) to toggle LEDs (direct driven).
+  
+  - main keypad routine
+    the main will initialization the device then enter infinite loop to 
+    read keypad input and display on 7-seg.
 
 
 
